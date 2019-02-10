@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "lerna bootstrap"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/pickleheads/music-charts/issues"
   },
-  "homepage": "https://github.com/pickleheads/music-charts#readme"
+  "homepage": "https://github.com/pickleheads/music-charts#readme",
+  "devDependencies": {
+    "lerna": "^3.11.0",
+    "prettier": "^1.16.4"
+  }
 }
