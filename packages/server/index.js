@@ -48,7 +48,6 @@ app.get('/songs/:song', async (req, res) => {
 
 app.post('/playlist', async (req, res, next) => {
   const playlistURL = req.body.url;
-  // TODO: check to ensure url is a string
   if (!_.isString(playlistURL)) {
     const error = new Error(
       `Supplied playlist URL "${playlistURL}" is not valid`
@@ -62,6 +61,13 @@ app.post('/playlist', async (req, res, next) => {
   );
   const playlistId = _.get(match, '0');
   // TODO: throw error if playlist id doesnt exist
+  if (!_.isString(playlistId)) {
+    const error = new Error (
+      `Supplied playlist ID ${playlistId} is not valid`
+    );
+    error.status = 400;
+    return next(error);
+  }
   const url = `https://api.spotify.com/v1/playlists/${playlistId}`;
   const options = {
     headers: {
