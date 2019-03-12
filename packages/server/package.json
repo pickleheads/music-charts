@@ -2,8 +2,9 @@
   "name": "server",
   "version": "1.0.0",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
-    "express": "^4.16.4",
+    "express": "^5.0.0-alpha.7",
     "mongoose": "^5.4.10",
     "node-fetch": "^2.3.0"
   }
