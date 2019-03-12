@@ -9,10 +9,12 @@ const MONGO_DB_URI = process.env.MONGO_DB_URI;
 module.exports = { connect };
 
 const playlistSchema = new mongoose.Schema({
+  endDate: Date,
   spotifyId: {
     type: String,
     required: true,
   },
+  startDate: Date,
 });
 
 const songSchema = new mongoose.Schema({
