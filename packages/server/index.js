@@ -6,6 +6,7 @@ const fetch = require('node-fetch');
 require('dotenv').config();
 const bodyParser = require('body-parser');
 const _ = require('lodash');
+const moment = require('moment');
 
 const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
 
@@ -48,6 +49,8 @@ app.get('/songs/:song', async (req, res) => {
 
 app.post('/playlist', async (req, res, next) => {
   const playlistURL = req.body.url;
+  const startDate = req.body.startDate && moment(req.body.startDate);
+  const endDate = req.body.endDate && moment(req.body.endDate);
   if (!_.isString(playlistURL)) {
     const error = new Error(
       `Supplied playlist URL "${playlistURL}" is not valid`
@@ -55,16 +58,33 @@ app.post('/playlist', async (req, res, next) => {
     error.status = 400;
     return next(error);
   }
-
+  if (startDate && !startDate.isValid()) {
+    const error = new Error(
+      `Supplied start date "${startDate}" is not valid`
+    );
+    error.status = 400;
+    return next(error);
+  }
+  if (endDate && !endDate.isValid()) {
+    const error = new Error(
+      `Supplied end date "${endDate}" is not valid`
+    );
+    error.status = 400;
+    return next(error);
+  }
+  if ((endDate && !startDate) || (startDate && !endDate)) {
+    const error = new Error(
+      "A start and end date must be supplied together"
+    );
+    error.status = 400;
+    return next(error);
+  }
   const match = playlistURL.match(
     /(?<=https:\/\/open\.spotify\.com\/(user\/\w+\/)?playlist\/).+?(?=(\?|$))/
   );
   const playlistId = _.get(match, '0');
-  // TODO: throw error if playlist id doesnt exist
   if (!_.isString(playlistId)) {
-    const error = new Error (
-      `Supplied playlist ID ${playlistId} is not valid`
-    );
+    const error = new Error(`Supplied playlist ID ${playlistId} is not valid`);
     error.status = 400;
     return next(error);
   }
@@ -80,7 +100,11 @@ app.post('/playlist', async (req, res, next) => {
   console.log(JSON.stringify(json, null, 2));
   const playlist = await req.db
     .model('Playlist')
-    .create({ spotifyId: playlistId });
+    .create({
+      spotifyId: playlistId,
+      ...(startDate && { startDate: startDate.toDate() }),
+      ...(endDate && { endDate: endDate.toDate() })
+    });
   res.status(202).send({ playlist });
 });
 
