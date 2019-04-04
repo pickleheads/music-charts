@@ -7,6 +7,7 @@ const router = require('express').Router();
 
 module.exports = router;
 
+// TODO: Move this to a controller file
 router.post('/', async (req, res, next) => {
   const playlistURL = req.body.url;
   if (!_.isString(playlistURL)) {
