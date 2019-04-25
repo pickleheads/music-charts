@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const path = require('path');
 const schemas = require('./schemas/index');
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '../../.env') });
 
 const MONGO_DB_URI = process.env.MONGO_DB_URI;
 
